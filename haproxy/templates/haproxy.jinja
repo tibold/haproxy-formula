@@ -63,10 +63,6 @@ global
 {%- if 'ssl-default-bind-options' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
 {%- endif %}
-{%- if salt['pillar.get']('haproxy:defaults:compression:enable', 'no') == True %}
-    compression algo {{ salt['pillar.get']('haproxy:defaults:compression:algo', 'gzip') }}
-    compression type {{ salt['pillar.get']('haproxy:defaults:compression:types', [])|join(' ') }}
-{%- endif %}
 
 {%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {})|dictsort %}
 #------------------
@@ -126,6 +122,11 @@ defaults
     errorfile {{ errorfile_name }} {{ errorfile }}
   {%- endfor %}
 {% endif %}
+{%- if salt['pillar.get']('haproxy:defaults:compression:enable', 'no') == True %}
+    compression algo {{ salt['pillar.get']('haproxy:defaults:compression:algo', 'gzip') }}
+    compression type {{ salt['pillar.get']('haproxy:defaults:compression:types', [])|join(' ') }}
+{%- endif %}
+
 {%- if salt['pillar.get']('haproxy:resolvers') %}
 
 
