@@ -87,6 +87,7 @@ userlist {{ id }}
 # common defaults that all the 'listen' and 'backend' sections will
 # use- if not designated in their block
 #------------------
+{%- set defaults = salt['pillar.get']('haproxy:defaults', {}) %}
 defaults
     log {{ salt['pillar.get']('haproxy:defaults:log', 'global') }}
     mode {{ salt['pillar.get']('haproxy:defaults:mode', 'http') }}
@@ -99,8 +100,14 @@ defaults
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) -%}
     {{- render_list_of_dictionaries('option', salt['pillar.get']('haproxy:defaults:options')) }}
 {%- endif %}
-{%- if 'logformat' in salt['pillar.get']('haproxy:defaults', {}) %}
-    log-format {{ salt['pillar.get']('haproxy:defaults:logformat') }}
+{%- if 'logformat' in defaults %}
+    log-format {{ defaults['logformat'] }}
+{%- endif %}
+{%- if 'uniqueidformat' in defaults %}
+    unique-id-format {{ defaults['uniqueidformat'] }}
+{%- endif %}
+{%- if 'uniqueidheader' in defaults %}
+    unique-id-header {{ defaults['uniqueidheader'] }}
 {%- endif %}
 {%- if 'maxconn' in salt['pillar.get']('haproxy:defaults', {}) %}
     maxconn {{ salt['pillar.get']('haproxy:defaults:maxconn') }}
